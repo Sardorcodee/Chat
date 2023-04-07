@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat</title>
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Lato:400,700);
+      *,
+      *:before,
+      *:after {
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #76b852; /* fallback for old browsers */
+        background: rgb(141, 194, 111);
+        background: linear-gradient(
+          90deg,
+          rgba(141, 194, 111, 1) 0%,
+          rgba(118, 184, 82, 1) 50%
+        );
+        font: 14px/20px "Lato", Arial, sans-serif;
+        padding: 40px 0;
+        color: white;
+      }
+
+      li {
+        list-style: none;
+      }
+
+      .container {
+        margin: 0 auto;
+        width: 750px;
+        background: #444753;
+        border-radius: 5px;
+      }
+
+      .people-list {
+        width: 260px;
+        float: left;
+      }
+      .people-list .search {
+        padding: 20px;
+      }
+      .people-list input {
+        border-radius: 3px;
+        border: none;
+        padding: 14px;
+        color: white;
+        background: #6a6c75;
+        width: 90%;
+        font-size: 14px;
+      }
+      .people-list .fa-search {
+        position: relative;
+        left: -25px;
+      }
+      .people-list ul {
+        padding: 20px;
+        height: 60px;
+      }
+      .people-list ul li {
+        padding-bottom: 20px;
+        list-style: none;
+      }
+      .people-list img {
+        float: left;
+      }
+      .people-list .about {
+        float: left;
+        margin-top: 8px;
+      }
+      .people-list .about {
+        padding-left: 8px;
+      }
+      .people-list .status {
+        color: #92959e;
+      }
+
+      .chat {
+        width: 490px;
+        float: left;
+        background: #f2f5f8;
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+        color: #434651;
+      }
+      .chat .chat-header {
+        padding: 20px;
+        border-bottom: 2px solid white;
+      }
+      .chat .chat-header img {
+        float: left;
+      }
+      .chat .chat-header .chat-about {
+        float: left;
+        padding-left: 10px;
+        margin-top: 6px;
+      }
+      .chat .chat-header .chat-with {
+        font-weight: bold;
+        font-size: 16px;
+      }
+      .chat .chat-header .chat-num-messages {
+        color: #92959e;
+      }
+      .chat .chat-header .fa-star {
+        float: right;
+        color: #d8dadf;
+        font-size: 20px;
+        margin-top: 12px;
+      }
+      .chat .chat-history {
+        padding: 30px 30px 20px;
+        border-bottom: 2px solid white;
+        overflow-y: scroll;
+        height: 405px;
+      }
+      .chat .chat-history .message-data {
+        margin-bottom: 15px;
+      }
+      .chat .chat-history .message-data-time {
+        color: #a8aab1;
+        padding-left: 6px;
+      }
+      .chat .chat-history .message {
+        color: white;
+        padding: 18px 20px;
+        line-height: 26px;
+        font-size: 16px;
+        border-radius: 7px;
+        margin-bottom: 30px;
+        width: 90%;
+        position: relative;
+      }
+      .chat .chat-history .message:after {
+        bottom: 100%;
+        left: 7%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+        border-bottom-color: #86bb71;
+        border-width: 10px;
+        margin-left: -10px;
+      }
+      .chat .chat-history .my-message {
+        background: #86bb71;
+      }
+      .chat .chat-history .other-message {
+        background: #94c2ed;
+      }
+      .chat .chat-history .other-message:after {
+        border-bottom-color: #94c2ed;
+        left: 93%;
+      }
+      .chat .chat-message {
+        padding: 30px;
+      }
+      .chat .chat-message textarea {
+        width: 100%;
+        border: none;
+        padding: 10px 20px;
+        font: 14px/22px "Lato", Arial, sans-serif;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        resize: none;
+      }
+      .chat .chat-message .fa-file-o,
+      .chat .chat-message .fa-file-image-o {
+        font-size: 16px;
+        color: gray;
+        cursor: pointer;
+      }
+      .chat .chat-message button {
+        float: right;
+        color: #94c2ed;
+        font-size: 16px;
+        text-transform: uppercase;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        background: #f2f5f8;
+      }
+      .chat .chat-message button:hover {
+        color: #75b1e8;
+      }
+
+      .online,
+      .offline,
+      .me {
+        margin-right: 3px;
+        font-size: 10px;
+      }
+
+      .online {
+        color: #86bb71;
+      }
+
+      .offline {
+        color: #e38968;
+      }
+
+      .me {
+        color: #94c2ed;
+      }
+
+      .align-left {
+        text-align: left;
+      }
+
+      .align-right {
+        text-align: right;
+      }
+
+      .float-right {
+        float: right;
+      }
+
+      .clearfix:after {
+        visibility: hidden;
+        display: block;
+        font-size: 0;
+        content: " ";
+        clear: both;
+        height: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container clearfix">
+      <div class="people-list" id="people-list">
+        <div class="search">
+          <input type="text" placeholder="search" />
+          <i class="fa fa-search"></i>
+        </div>
+        <ul class="list" id="users"></ul>
+      </div>
+
+      <div class="chat">
+        <div class="chat-header clearfix">
+          <img id="user_img" alt="avatar" />
+
+          <div class="chat-about">
+            <div class="chat-with" id="user_name"></div>
+            <div class="chat-num-messages">Onlayn</div>
+          </div>
+          <i class="fa fa-star"></i>
+        </div>
+        <!-- end chat-header -->
+
+        <div class="chat-history">
+          <ul id="messeng"></ul>
+        </div>
+        <!-- end chat-history -->
+
+        <form id="form" class="chat-message clearfix">
+          <textarea
+            name="message-to-send"
+            id="message-to-send"
+            placeholder="Type your message"
+            rows="3"
+          ></textarea>
+
+          <i class="fa fa-file-o"></i> &nbsp;&nbsp;&nbsp;
+          <i class="fa fa-file-image-o"></i>
+
+          <button type="submit">Send</button>
+        </form>
+        <!-- end chat-message -->
+      </div>
+      <!-- end chat -->
+    </div>
+    <!-- end container -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      if (localStorage.getItem("token")) {
+        var socket = io();
+        let users = document.getElementById("users");
+        let messengs = document.getElementById("messeng");
+        let user_img = document.getElementById("user_img");
+        let user_name = document.getElementById("user_name");
+
+        socket.emit("get", localStorage.getItem("token"));
+        const options = {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        };
+        const formatter = new Intl.DateTimeFormat("en-US", options);
+        socket.on("messeng", (data) => {
+          users.innerHTML = "";
+          messengs.innerHTML = "";
+          data?.users.map((e) => {
+            if (e.user_id == localStorage.getItem("token")) {
+              user_img.src = e.user_img;
+              user_name.innerHTML = e.user_name;
+            }
+            let user = ` <li class="clearfix">
+            <img
+              src="${e.user_img}"
+              alt="avatar"
+            />
+            <div class="about">
+              <div class="name">${e.user_name}</div>
+              <div class="status">
+                <i class="fa fa-circle online"></i> online
+              </div>
+            </div>
+          </li>`;
+            return (users.innerHTML += user);
+          });
+          data?.messengs.map((e) => {
+            if (e.user_id == localStorage.getItem("token")) {
+              let mes = `<li class="clearfix">
+              <div class="message-data align-right">
+                <span class="message-data-time">${formatter.format(
+                  new Date(e.messeng_time)
+                )}</span> &nbsp;
+                &nbsp; <span class="message-data-name">Olia</span>
+                <i class="fa fa-circle me"></i>
+              </div>
+              <div class="message other-message float-right">
+               ${e.messeng_title}
+              </div>
+            </li>`;
+              return (messengs.innerHTML += mes);
+            }
+            let mes = ` <li>
+              <div class="message-data">
+                <span class="message-data-name"
+                  ><i class="fa fa-circle online"></i> Vincent</span
+                >
+                <span class="message-data-time">${formatter.format(
+                  new Date(e.messeng_time)
+                )}</span>
+              </div>
+              <div class="message my-message">
+               ${e.messeng_title}
+              </div>
+            </li>`;
+            messengs.innerHTML += mes;
+          });
+        });
+
+        var form = document.getElementById("form");
+        var input = document.getElementById("message-to-send");
+
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          if (input.value) {
+            socket.emit("send", {
+              msg: input.value,
+              id: localStorage.getItem("token"),
+            });
+            input.value = "";
+            return;
+          }
+        });
+      } else {
+        window.location = "/register";
+      }
+    </script>
+  </body>
+</html>

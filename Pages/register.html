@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register</title>
+    <style>
+      body {
+        background: #76b852; /* fallback for old browsers */
+        background: rgb(141, 194, 111);
+        background: linear-gradient(
+          90deg,
+          rgba(141, 194, 111, 1) 0%,
+          rgba(118, 184, 82, 1) 50%
+        );
+        font-family: "Roboto", sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      .vid-container {
+        position: relative;
+        height: 100vh;
+        overflow: hidden;
+      }
+      .bgvid.back {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        z-index: -100;
+      }
+      .inner {
+        position: absolute;
+      }
+      .inner-container {
+        width: 400px;
+        height: 400px;
+        position: absolute;
+        top: calc(50vh - 200px);
+        left: calc(50vw - 200px);
+        overflow: hidden;
+      }
+      .bgvid.inner {
+        top: calc(-50vh + 200px);
+        left: calc(-50vw + 200px);
+        filter: url("data:image/svg+xml;utf9,<svg%20version='1.1'%20xmlns='http://www.w3.org/2000/svg'><filter%20id='blur'><feGaussianBlur%20stdDeviation='10'%20/></filter></svg>#blur");
+        -webkit-filter: blur(10px);
+        -ms-filter: blur(10px);
+        -o-filter: blur(10px);
+        filter: blur(10px);
+      }
+      .box {
+        position: relative;
+        z-index: 1;
+        background: #ffffff;
+        max-width: 360px;
+        margin: 0 auto 100px;
+        padding: 45px;
+        text-align: center;
+        box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2),
+          0 5px 5px 0 rgba(0, 0, 0, 0.24);
+      }
+      .box input {
+        outline: 0;
+        font-family: "Roboto", sans-serif;
+        background: #f2f2f2;
+        width: 100%;
+        border: 0;
+        margin: 0 0 15px;
+        padding: 15px;
+        box-sizing: border-box;
+        font-size: 14px;
+      }
+      .box input:focus,
+      .box input:active,
+      .box button:focus,
+      .box button:active {
+        outline: none;
+      }
+      .box button {
+        background: #4caf50;
+        border: 0;
+        color: #fff;
+        padding: 10px;
+        font-size: 20px;
+        width: 330px;
+        margin: 20px auto;
+        display: block;
+        cursor: pointer;
+      }
+      .box button:active {
+        background: #27ae60;
+      }
+      .box p {
+        font-size: 14px;
+        text-align: center;
+      }
+      .box p span {
+        cursor: pointer;
+        color: #666;
+      }
+      .flex {
+        display: flex;
+      }
+      .g-2 {
+        gap: 2em;
+      }
+      .g-1 {
+        gap: 0.5em;
+      }
+      #error {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="vid-container">
+      <div class="inner-container">
+        <form class="box" id="form">
+          <input type="text" id="username" placeholder="Full name" required />
+          <input
+            type="password"
+            id="password"
+            placeholder="password"
+            required
+          />
+          <input
+            type="password"
+            id="password2"
+            placeholder="Tasdiqlang password"
+            required
+          />
+          <div class="flex g-2">
+            <div class="flex g-1">
+              <input type="radio" name="Gender" value="Male" id="gender" />
+              <span>Male</span>
+            </div>
+            <div class="flex g-1">
+              <input type="radio" name="Gender" value="Female" id="gender2" />
+              <span>Female</span>
+            </div>
+          </div>
+          <span id="error"></span>
+          <button id="btn" type="submit">Register</button>
+          <a href="/login">Login</a>
+        </form>
+      </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      if (localStorage.getItem("token")) {
+        window.location = "/";
+      }
+      var socket = io();
+      var form = document.getElementById("form");
+      var username = document.getElementById("username");
+      var password = document.getElementById("password");
+      var password2 = document.getElementById("password2");
+      var gender = document.getElementById("gender");
+      var gender1 = document.getElementById("gender2");
+      var error = document.getElementById("error");
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (password.value === password2.value) {
+          if (gender.checked || gender1.checked) {
+            socket.emit("register", {
+              username: username.value,
+              password: password.value,
+              gender: gender.checked ? gender.value : gender1.value,
+            });
+            username.value = "";
+            password.value = "";
+            password2.value = "";
+          }
+        } else {
+          error.innerHTML = `Parol mos emas!`;
+        }
+      });
+      socket.on("register", (msg) => {
+        error.innerHTML = msg.msg;
+        localStorage.setItem("token", msg.token);
+        window.location = "/";
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,21 @@
+[
+    {
+        "user_name": "sardorcode_",
+        "user_id": "140243da-7607-4047-90c629192eb6",
+        "user_gender": "Male",
+        "user_img": "https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg"
+    },
+    {
+        "user_name": "Lalitti2",
+        "user_id": "140243da-7607-4047-b0cc-90c629192eb6",
+        "user_gender": "Female",
+        "user_img": "https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_04.jpg"
+    },
+    {
+        "user_name": "ID4300",
+        "user_password": "2005",
+        "user_id": "bda1498e-09e6-4138-8a4f-40359f306a47",
+        "user_gender": "Male",
+        "user_img": "https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg"
+    }
+]
